@@ -2,29 +2,34 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema(
     {
-        name:{
+        name: {
             type: String,
             required: true,
-            trim: true,
+            trim: true, // removes leading and trailing whitespace
         },
-        email:{
-            type:String,
+        email: {
+            type: String,
             required: true,
             unique: true,
+            match: [/.+@.+\..+/, 'Please enter a valid email address'], // email validation
         },
-        password:{
+        password: {
             type: String,
             required: true,
         },
-        phone:{
+        phone: {
             type: String,
             required: true,
+            match: [/^\d{10}$/, 'Please enter a valid phone number'], // Optional validation for 10-digit phone number
         },
-        role:{
+        role: {
             type: Boolean,
-            default: 0,
+            default: false, // false = regular user, true = admin
         }
-},{timestamps:true}
+    },
+    { timestamps: true }
 );
 
-module.exports = mongoose.model('users',userSchema);
+
+
+module.exports = mongoose.model('User', userSchema);

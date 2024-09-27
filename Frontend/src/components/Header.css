@@ -1,6 +1,6 @@
 /* General Navbar Styling */
 .navbar {
-  background: linear-gradient(135deg, #f5abab, #f7c760); 
+  background-image: url(https://www.itl.cat/pngfile/big/206-2065175_disney-peter-pan-iphone-wallpaper-18-disney-star.jpg); 
   padding: 0.8rem 1rem;
   border-bottom: 1px solid #333232;  
   box-shadow: 0 2px 5px rgba(10, 10, 10, 0.2); 
@@ -14,7 +14,7 @@
 
 /* Navbar Links */
 .navbar-nav .nav-link {
-  color: #121212; 
+  color: #f9f8f8; 
   margin: 0 0.75rem;
   font-weight: 600;
   font-size: 1.1rem;
@@ -23,7 +23,7 @@
 
 .navbar-nav .nav-link:hover,
 .navbar-nav .nav-link.active {
-  color: #7d0a02; 
+  color: #fc742b; 
   transform: scale(1.05); 
 }
 

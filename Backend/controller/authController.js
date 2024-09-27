@@ -1,76 +1,91 @@
 const { hashPassword, comparePassword } = require("../helper/authHelper");
 const userModel = require("../models/userModel");
 const JWT = require("jsonwebtoken");
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
+// POST Register
 const registerController = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
-    //validation
+    
+    // Validation
     if (!name) {
-      return res.send({ message: 'Name is required' });
+      return res.status(400).send({ message: 'Name is required' });
     }
     if (!email) {
-      return res.send({ message: 'Email is required' });
+      return res.status(400).send({ message: 'Email is required' });
     }
-    if (!password) {
-      return res.send({ message: 'Password is required' });
+    if (!password || password.length < 6) {
+      return res.status(400).send({
+        message: 'Password is required and should be at least 6 characters long',
+      });
     }
     if (!phone) {
-      return res.send({ message: 'Phone no: is required' });
+      return res.status(400).send({ message: 'Phone number is required' });
     }
-    //checking user
+    
+    // Checking if user exists
     const existingUser = await userModel.findOne({ email });
-    //existing user
     if (existingUser) {
       return res.status(400).send({
         success: false,
-        message: 'Already Register please login'
+        message: 'User already registered, please login',
       });
     }
-    //register user
+
+    // Hashing password
     const hashedPassword = await hashPassword(password);
-    //save
+
+    // Save user to database
     const user = await new userModel({
       name,
       email,
       phone,
       password: hashedPassword,
-      role,
     }).save();
 
     res.status(201).send({
       success: true,
-      message: 'User Register Successfully',
-      user,
+      message: 'User registered successfully',
+      user: {
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role, // If role is needed
+      },
     });
   } catch (error) {
-    console.log(error)
+    console.error(error);
     res.status(500).send({
       success: false,
-      message: 'Error in Registration',
-      error,
+      message: 'Error in registration',
+      error: error.message,
     });
   }
 };
-//POST Login
+
+// POST Login
 const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
-    //validation
+
+    // Validation
     if (!email || !password) {
       return res.status(400).send({
         success: false,
-        message: 'Invalid email or password',
+        message: 'Email and password are required',
       });
     }
-    // check user
+
+    // Check if user exists
     const user = await userModel.findOne({ email });
     if (!user) {
       return res.status(404).send({
         success: false,
-        message: 'Email is not registered',
+        message: 'User not found, please register first',
       });
     }
+
+    // Check password
     const match = await comparePassword(password, user.password);
     if (!match) {
       return res.status(400).send({
@@ -78,8 +93,10 @@ const loginController = async (req, res) => {
         message: 'Invalid password',
       });
     }
-    // Token
+
+    // Generate JWT Token
     const token = JWT.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+
     res.status(200).send({
       success: true,
       message: 'Logged in successfully',
@@ -92,47 +109,20 @@ const loginController = async (req, res) => {
       token,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).send({
       success: false,
       message: 'Error in login',
-    });
-  }
-};
-
-// Create Payment Intent Controller
-const createPaymentIntent = async (req, res) => {
-  try {
-    const { amount } = req.body; // Amount should be passed from the frontend
-
-    if (!amount) {
-      return res.status(400).send({ success: false, message: 'Amount is required' });
-    }
-
-    // Create a PaymentIntent with the order amount and currency
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount * 100, // Stripe accepts the amount in cents
-      currency: "usd", // Specify the currency (change as necessary)
-    });
-
-    res.status(200).send({
-      success: true,
-      clientSecret: paymentIntent.client_secret,
-    });
-  } catch (error) {
-    console.error("Error creating payment intent:", error);
-    res.status(500).send({
-      success: false,
-      message: 'Error creating payment intent',
       error: error.message,
     });
   }
 };
 
 
-//test controller
+
+// Test Protected Route
 const testController = (req, res) => {
-  res.send("Protected Routes");
+  res.send("Protected route accessed");
 };
 
-module.exports = { registerController, loginController, testController ,  createPaymentIntent };
+module.exports = { registerController, loginController, testController };

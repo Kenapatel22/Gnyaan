@@ -11,20 +11,17 @@ import Dashboard from './pages/User/UserDash';
 import PrivateRoute from './components/Routes/Private';
 import AdminRoute from './components/Routes/AdminRoute';
 import AdminDashboard from './pages/Admin/AdminDash';
-import UploadVideo from './pages/Admin/UploadVideo';
+import AllCourse from './pages/Admin/AllCourse';
 import Users from './pages/Admin/Users';
 import AddLecture from './pages/Admin/AddLecture';
 import Profile from './pages/User/Profile';
 import Order from './pages/User/Order';
 import Courses from './pages/Courses';
 import Payment from './pages/Payment';
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
 
-const stripePromise = loadStripe('KP_public_2232');
 function App() {
   return (
-    <Elements stripe={stripePromise}>
+    
       <Routes>
         <Route path='/' element={<HomePage />} />
         <Route path='/about' element={<About />} />
@@ -35,7 +32,7 @@ function App() {
         </Route>
         <Route path='/dashboard' element={<AdminRoute />} >
           <Route path='admin' element={<AdminDashboard />} />
-          <Route path='admin/upload-video' element={<UploadVideo />} />
+          <Route path='admin/All-Course' element={<AllCourse />} />
           <Route path='admin/add-lecture' element={<AddLecture />} />
           <Route path='admin/users' element={<Users />} />  
         </Route>
@@ -49,7 +46,7 @@ function App() {
         <Route path='/policy' element={<Policy />} />
         <Route path='*' element={<PageNotFound />} />
       </Routes>
-    </Elements>
+   
   );
 };
 

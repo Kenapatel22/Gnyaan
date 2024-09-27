@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 const morgan = require('morgan');
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); // Import and configure Stripe
+const path = require('path');
 
 //configure env
 dotenv.config();
@@ -19,6 +19,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(morgan('dev'));
+// Serve static files from the "uploads" folder
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 //routes
 app.use("/api/v1/auth", authRoutes);

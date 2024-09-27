@@ -20,26 +20,32 @@ const Body = () => {
       name: 'Full Stack Development',
       description: 'Master frontend and backend development with hands-on projects.',
       img: fullstackimg,
+      price:<b>'RS.999'</b>
     },
     {
       name: 'Data Science',
       description: 'Learn data analysis, machine learning, and AI techniques.',
       img: datascienceimg,
+      price:<b>'RS.899'</b>
+      
     },
     {
       name: 'UI/UX Design',
       description: 'Design user-friendly and visually appealing interfaces.',
       img: uiuximg,
+      price:<b>'RS.699'</b>
     },
     {
       name: 'Cloud Computing',
       description: 'Gain expertise in cloud platforms and services.',
       img: cloudcomputimg,
+      price:<b>'RS.499'</b>
     },
     {
       name: 'Cybersecurity',
       description: 'Learn to protect systems and networks from cyber threats.',
       img: cybersecurityimg,
+      price:<b>'RS.599'</b>
     },
   ];
 
@@ -135,6 +141,7 @@ const Body = () => {
               <img src={course.img} alt={course.name} className="course-img" />
               <h3>{course.name}</h3>
               <p>{course.description}</p>
+              <p>{course.price}</p>
               <button className="enroll-button" 
               onClick={() =>{
                 if (auth?.user){
