@@ -1,5 +1,6 @@
 const { hashPassword, comparePassword } = require("../helper/authHelper");
 const userModel = require("../models/userModel");
+const orderModel = require("../models/orderModel")
 const JWT = require("jsonwebtoken");
 
 // POST Register
@@ -125,4 +126,22 @@ const testController = (req, res) => {
   res.send("Protected route accessed");
 };
 
-module.exports = { registerController, loginController, testController };
+//orders
+const getOrdersController = async (req, res) => {
+  try {
+    const orders = await orderModel
+      .find({ buyer: req.user._id })
+      .populate("buyer", "name");
+    res.json(orders);
+  } catch (error) {
+    console.log(error)
+    res.status(500).send({
+      success: false,
+      message: 'Error While Geting Orders',
+      error,
+    });
+  }
+};
+
+
+module.exports = { registerController, loginController, testController ,getOrdersController };

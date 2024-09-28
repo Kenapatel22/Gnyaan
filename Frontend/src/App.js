@@ -15,9 +15,10 @@ import AllCourse from './pages/Admin/AllCourse';
 import Users from './pages/Admin/Users';
 import AddLecture from './pages/Admin/AddLecture';
 import Profile from './pages/User/Profile';
-import Order from './pages/User/Order';
 import Courses from './pages/Courses';
 import Payment from './pages/Payment';
+import EditCourse from './pages/Admin/Editcourse';
+import Orders from './pages/User/Order';
 
 function App() {
   return (
@@ -28,11 +29,12 @@ function App() {
         <Route path='/dashboard' element={<PrivateRoute />}>
           <Route path='user' element={<Dashboard />} />
           <Route path='user/profile' element={<Profile />} />
-          <Route path='user/orders' element={<Order />} />
+          <Route path='user/orders' element={<Orders />} />
         </Route>
         <Route path='/dashboard' element={<AdminRoute />} >
           <Route path='admin' element={<AdminDashboard />} />
           <Route path='admin/All-Course' element={<AllCourse />} />
+          <Route path="/dashboard/admin/edit-course/:courseId" element={<EditCourse />} />
           <Route path='admin/add-lecture' element={<AddLecture />} />
           <Route path='admin/users' element={<Users />} />  
         </Route>

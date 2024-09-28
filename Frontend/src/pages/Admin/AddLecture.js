@@ -1,64 +1,46 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Header from '../../components/Layout/Header';
 import Footer from '../../components/Layout/Footer';
 import AdminMenu from '../../components/Layout/AdminMenu';
-import '../../styles/AddLec.css'
-import axios from 'axios';
 
-const AddLecture = () => {
-    const [course, setCourse] = useState({
-        name: '',
-        description: '',
-        price: '',
-        image: null,
-        //videos: []
-    });
-
-    const handleChange = (e) => {
-        const { name,value, files } = e.target;
-
-        if (name === 'imageUrl') {
-            setCourse({ ...course, imageUrl: files[0] });
-        }
-        // else if (name === 'videos') {
-            //setCourse({ ...course, videos: Array.from(files) });
-       // }
-        else {
-            setCourse({ ...course, [name]: value });
-    }
-    };
+const AddCourse = () => {
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [price, setPrice] = useState(''); 
+    const [image, setImage] = useState(null);
+    const navigate = useNavigate(); // Using the navigate hook
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Form submitted', course);
 
         const formData = new FormData();
-        formData.append('name', course.name);
-        formData.append('description', course.description);
-        formData.append('price', course.price);
-        formData.append('image', course.imageUrl);
-       // course.videos.forEach((video, index) => {
-            //formData.append(`videos`, video);
-        //} );
-
-        console.log('ook');
+        formData.append('title', title);
+        formData.append('description', description);
+        formData.append('price', price);
+        formData.append('image', image);  // Append image file
 
         try {
-            const response = await axios.post('/api/v1/auth/add-course', formData, {
+            await axios.post('/api/v1/auth/add-course', formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+                    'Content-Type': 'multipart/form-data',
+                },
             });
-            console.log('Course added:', response.data);
-            // You can display a success notification or redirect here
+            // No alert here
         } catch (error) {
-            console.error('Error adding course:', error.response?.data || error.message);
-            // You can display an error notification here
+            console.error(error);
+            alert('Error uploading course');
         }
     };
 
+    const handleNavigation = async (e) => {
+        await handleSubmit(e);  // First submit the form
+        navigate('/dashboard/admin');  // Navigate after successful form submission
+    };
+
     return (
-        <div title={'Dashboard - Add Lecture'}>
+        <div title={"Dashboard - Add Course"}>
             <Header />
             <div className='container-fluid m-3 p-3'>
                 <div className='row'>
@@ -66,69 +48,49 @@ const AddLecture = () => {
                         <AdminMenu />
                     </div>
                     <div className='col-md-9'>
-                        <h1 className='mb-4'>Add New Lecture</h1>
-                        <form className='lecture-form' onSubmit={handleSubmit}>
-                            <div className='form-group'>
-                                <label>Course Name</label>
+                        <h1>Upload Course</h1>
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                <label>Course Title</label>
                                 <input
-                                    type='text'
-                                    name='name'
-                                    value={course.name}
-                                    onChange={handleChange}
-                                    className='form-control'
-                                    placeholder='Enter course name'
+                                    type="text"
+                                    className="form-control"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
                                     required
                                 />
                             </div>
-                            <div className='form-group'>
-                                <label>Description</label>
+                            <div className="form-group">
+                                <label>Course Description</label>
                                 <textarea
-                                    name='description'
-                                    value={course.description}
-                                    onChange={handleChange}
-                                    className='form-control'
-                                    placeholder='Enter course description'
-                                    rows='4'
+                                    className="form-control"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    required
+                                ></textarea>
+                            </div>
+                            <div className="form-group">
+                                <label>Course Price</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={price}
+                                    onChange={(e) => setPrice(e.target.value)}  // Handle price change
                                     required
                                 />
                             </div>
-                            <div className='form-group'>
-                                <label>Price</label>
+                            <div className="form-group">
+                                <label>Upload Image</label>
                                 <input
-                                    type='number'
-                                    name='price'
-                                    value={course.price}
-                                    onChange={handleChange}
-                                    className='form-control'
-                                    placeholder='Enter price'
+                                    type="file"
+                                    className="form-control"
+                                    accept="image/*"
+                                    onChange={(e) => setImage(e.target.files[0])}
                                     required
                                 />
                             </div>
-                            <div className='form-group'>
-                                <label>Course Image</label>
-                                <input
-                                    type='file'
-                                    name='imageUrl'
-                                    onChange={handleChange}
-                                    className='form-control-file'
-                                    accept='image/*'
-                                    required
-                                />
-                            </div>
-                           {/*  <div className='form-group'>
-                                <label>Upload Videos (Multiple)</label>
-                                <input
-                                    type='file'
-                                    name='videos'
-                                    onChange={handleChange}
-                                    className='form-control-file'
-                                    accept='video/*'
-                                    multiple
-                                    required
-                                />
-                            </div>*/}
-                            <button type='submit' className='btn btn-primary mt-3'>
-                                Save Course
+                            <button type="submit" className="btn btn-primary" onClick={handleNavigation}>
+                                Add Course
                             </button>
                         </form>
                     </div>
@@ -139,4 +101,4 @@ const AddLecture = () => {
     );
 };
 
-export default AddLecture;
+export default AddCourse;

@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const morgan = require('morgan');
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
+const productRoutes = require("./routes/productRoutes.js");
 const path = require('path');
 
 //configure env
@@ -25,6 +26,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 //routes
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/product", productRoutes);
 
 
 //rest api

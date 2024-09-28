@@ -91,7 +91,7 @@ const Courses = () => {
     {console.log(course)}
     {/* Ensure imageUrl is defined before rendering */}
     {course.imageUrl ? (
-      <img src={`http://localhost:5000/${course.imageUrl}`} alt={course.name} className="course-img" />
+      <img src={`http://localhost:5000/uploads/${course.imageUrl}`} alt={course.name} className="course-img" />
     ) : (
       <p>No image available</p>
     )}

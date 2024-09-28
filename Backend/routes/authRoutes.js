@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerController, loginController, testController, getUserProfile } = require('../controller/authController');
+const { registerController, loginController, testController, getOrdersController } = require('../controller/authController');
 const { requireSignIn, isAdmin} = require("../middleware/authMiddleware");
 const userModel = require("../models/userModel");
 const Course = require('../models/courseModel');
@@ -117,6 +117,53 @@ router.get('/courses', async (req, res) => {
         res.status(500).json({ message: 'Error fetching courses', error });
     }
 });
+
+// DELETE course by ID
+router.delete('/courses/:id', async (req, res) => {
+    try {
+        const { id } = req.params; // Get course ID from request params
+        const deletedCourse = await Course.findByIdAndDelete(id); // Delete course from DB
+
+        if (!deletedCourse) {
+            return res.status(404).json({ message: 'Course not found' });
+        }
+
+        res.status(200).json({ message: 'Course deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting course', error });
+    }
+});
+
+// Update course by ID
+router.put('/courses/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, description, price } = req.body;
+
+        // Validation for empty fields or invalid price
+        if (!name || !description || !price || isNaN(price) || price <= 0) {
+            return res.status(400).json({ error: "Invalid input fields" });
+        }
+
+        const updatedCourse = await Course.findByIdAndUpdate(
+            id,
+            { name, description, price },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedCourse) {
+            return res.status(404).json({ error: "Course not found" });
+        }
+
+        res.json(updatedCourse);
+    } catch (error) {
+        console.error("Error updating course:", error);
+        res.status(500).json({ error: "Server error: " + error.message });
+    }
+});
+
+//orders
+router.get('/orders', requireSignIn, getOrdersController)
 
 
 module.exports = router;
