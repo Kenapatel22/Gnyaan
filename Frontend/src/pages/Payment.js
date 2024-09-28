@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/auth";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import '../styles/Payment.css'
+
 const Payment = () => {
     const [auth] = useAuth();
     const [clientToken, setClientToken] = useState(null); // Initialize as null

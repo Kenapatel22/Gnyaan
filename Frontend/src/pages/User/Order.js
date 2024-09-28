@@ -4,6 +4,7 @@ import Footer from '../../components/Layout/Footer';
 import UserMenu from '../../components/Layout/UserMenu';
 import axios from 'axios';
 import { useAuth } from '../../context/auth';
+import '../../styles/Order.css';
 const Orders = () => {
     const [orders, setOrders] = useState([]);
     const [auth] = useAuth();
@@ -48,7 +49,7 @@ const Orders = () => {
                         <UserMenu />
                     </div>
                     <div className="col-md-9">
-                        <h1 className="text-center">All Orders</h1>
+                        <h1>All Orders</h1>
                         {
                             orders?.map((o, i) => (
                                 <div key={i} className="border shadow mb-3">
